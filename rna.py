@@ -3,7 +3,7 @@
 import argparse
 
 def dna_to_rna(string):
-    trans_table = str.maketrans('ACGT','ACGU')
+    trans_table = str.maketrans('T','U')
     rna_string = string.upper().translate(trans_table)
     return rna_string
 
