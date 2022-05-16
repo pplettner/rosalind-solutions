@@ -1,7 +1,7 @@
 #!/usr/local/bin/python3
 
 import argparse
-from utils import read_fasta, rna_to_prot
+from utils import read_fasta,reverse_complement,rna_to_prot
 
 def dna_to_rna(string):
     trans_table = str.maketrans('T','U')
@@ -18,12 +18,6 @@ def orf(seq):
         protein_seqs.add(protein_seq)
 
     return protein_seqs
-
-def reverse_complement(string):
-    trans_table = str.maketrans('ACGT','TGCA')
-    revc = string.upper()[::-1].translate(trans_table)
-    return revc
-
 
 parser = argparse.ArgumentParser()
 parser.add_argument('dataset', type=argparse.FileType('r'))

@@ -24,6 +24,11 @@ def read_fasta(handle):
             seq = ''.join(val)
             yield (name, seq)
 
+def reverse_complement(string):
+    trans_table = str.maketrans('ACGT','TGCA')
+    revc = string.upper()[::-1].translate(trans_table)
+    return revc
+
 def rna_to_prot(seq):
     protein_seq = ''
 

@@ -1,11 +1,7 @@
 #!/usr/local/bin/python3
 
 import argparse
-
-def reverse_complement(string):
-    trans_table = str.maketrans('ACGT','TGCA')
-    revc = string.upper()[::-1].translate(trans_table)
-    return revc
+from utils import reverse_complement
 
 parser = argparse.ArgumentParser()
 parser.add_argument('dataset', type=argparse.FileType('r'))

@@ -1,12 +1,7 @@
 #!/usr/local/bin/python3
 
 import argparse
-from utils import read_fasta
-
-def reverse_complement(string):
-    trans_table = str.maketrans('ACGT','TGCA')
-    revc = string.upper()[::-1].translate(trans_table)
-    return revc
+from utils import read_fasta,reverse_complement
 
 parser = argparse.ArgumentParser()
 parser.add_argument('dataset', type=argparse.FileType('r'))
