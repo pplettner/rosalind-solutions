@@ -6,6 +6,10 @@ PROTEIN_OF_CODON = json.loads(
     read_text('data', 'rna_codon.json')
 )
 
+MASS_OF_AA = json.loads(
+    read_text('data', 'aa_mass.json')
+)
+
 def read_fasta(handle):
     fasta_iter = groupby(handle, lambda line: line[0] == ">")
 
