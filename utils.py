@@ -10,6 +10,11 @@ MASS_OF_AA = json.loads(
     read_text('data', 'aa_mass.json')
 )
 
+def dna_to_rna(string):
+    trans_table = str.maketrans('T','U')
+    rna_string = string.upper().translate(trans_table)
+    return rna_string
+
 def read_fasta(handle):
     fasta_iter = groupby(handle, lambda line: line[0] == ">")
 
