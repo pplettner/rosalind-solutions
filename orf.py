@@ -2,26 +2,14 @@
 
 import argparse
 import json
-from itertools import groupby,zip_longest
+from itertools import zip_longest
+from utils import read_fasta
 
 def grouper(iterable, n, fillvalue=None):
     "Collect data into fixed-length chunks or blocks"
     # grouper('ABCDEFG', 3, 'x') --> ABC DEF Gxx"
     args = [iter(iterable)] * n
     return zip_longest(*args, fillvalue=fillvalue)
-
-def read_fasta(filename):
-    with open(filename) as f:
-        fasta_iter = groupby(f, lambda line: line[0] == ">")
-
-        for (is_header, val) in fasta_iter:
-            val = [x.strip('\n>') for x in val]
-
-            if is_header:
-                [name] = val
-            else:
-                seq = ''.join(val)
-                yield (name, seq)
 
 def dna_to_rna(string):
     trans_table = str.maketrans('T','U')
@@ -59,7 +47,7 @@ def reverse_complement(string):
 
 parser = argparse.ArgumentParser()
 parser.add_argument('-c','--codon', help='Codon mapping json', type=argparse.FileType('r'), required=True)
-parser.add_argument('dataset')
+parser.add_argument('dataset', type=argparse.FileType('r'))
 args = parser.parse_args()
 
 (name, seq) = next(read_fasta(args.dataset))

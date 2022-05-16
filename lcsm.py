@@ -1,20 +1,7 @@
 #!/usr/local/bin/python3
 
 import argparse
-from itertools import groupby
-
-def read_fasta(filename):
-    with open(filename) as f:
-        fasta_iter = groupby(f, lambda line: line[0] == ">")
-
-        for (is_header, val) in fasta_iter:
-            val = [x.strip('\n>') for x in val]
-
-            if is_header:
-                [name] = val
-            else:
-                seq = ''.join(val)
-                yield (name, seq)
+from utils import read_fasta
 
 # Calculating LCS of N arbitrary strings by:
 # - Binary search of possible substring lengths of first string
@@ -28,7 +15,6 @@ def lcs(*seqs):
 
     min_len = 0
     max_len = len(reference_str) + 1
-
 
     while max_len > min_len + 1:
         candidate_len = int((max_len + min_len) / 2)
@@ -49,9 +35,8 @@ def lcs(*seqs):
     return (lc_strs)
 
 parser = argparse.ArgumentParser()
-parser.add_argument('dataset')
+parser.add_argument('dataset', type=argparse.FileType('r'))
 args = parser.parse_args()
-
 
 all_seqs = [seq for (name,seq) in read_fasta(args.dataset)]
 
