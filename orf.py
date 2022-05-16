@@ -1,41 +1,21 @@
 #!/usr/local/bin/python3
 
 import argparse
-import json
-from itertools import zip_longest
-from utils import read_fasta
-
-def grouper(iterable, n, fillvalue=None):
-    "Collect data into fixed-length chunks or blocks"
-    # grouper('ABCDEFG', 3, 'x') --> ABC DEF Gxx"
-    args = [iter(iterable)] * n
-    return zip_longest(*args, fillvalue=fillvalue)
+from utils import read_fasta, rna_to_prot
 
 def dna_to_rna(string):
     trans_table = str.maketrans('T','U')
     rna_string = string.upper().translate(trans_table)
     return rna_string
 
-def rna_to_prot(seq, protein_of_codon):
+def orf(seq):
     start = 0
-    protein_seqs = []
+    protein_seqs = set()
 
     while (location := seq.find('AUG', start)) != -1:
         start = location + 3
-        protein_seq = ''
-
-        for triple in grouper(seq[location:], 3):
-            if None in triple:
-                break
-
-            codon = ''.join(triple)
-            protein = protein_of_codon[codon]
-
-            if protein == 'Stop':
-                protein_seqs.append(protein_seq)
-                break
-            else:
-                protein_seq += protein
+        protein_seq = rna_to_prot(seq[location:])
+        protein_seqs.add(protein_seq)
 
     return protein_seqs
 
@@ -46,12 +26,10 @@ def reverse_complement(string):
 
 
 parser = argparse.ArgumentParser()
-parser.add_argument('-c','--codon', help='Codon mapping json', type=argparse.FileType('r'), required=True)
 parser.add_argument('dataset', type=argparse.FileType('r'))
 args = parser.parse_args()
 
 (name, seq) = next(read_fasta(args.dataset))
-protein_of_codon = json.load(args.codon)
 
 rna_seq = dna_to_rna(seq)
 revc_rna_seq = dna_to_rna(reverse_complement(seq))
@@ -59,6 +37,6 @@ revc_rna_seq = dna_to_rna(reverse_complement(seq))
 candidates = set()
 
 for s in (rna_seq, revc_rna_seq):
-    candidates.update(rna_to_prot(s, protein_of_codon))
+    candidates.update(orf(s))
 
 print ('\n'.join(candidates))
