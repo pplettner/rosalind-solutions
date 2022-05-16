@@ -1,19 +1,17 @@
 #!/usr/local/bin/python3
 
 import argparse
-import json
 from collections import defaultdict
+from utils import PROTEIN_OF_CODON
 
 parser = argparse.ArgumentParser()
-parser.add_argument('-c','--codon', help='Codon mapping json', type=argparse.FileType('r'), required=True)
 parser.add_argument('dataset', type=argparse.FileType('r'))
 args = parser.parse_args()
 
 
-protein_of_codon = json.load(args.codon)
 num_codons = defaultdict(int)
 
-for codon,protein in protein_of_codon.items():
+for codon,protein in PROTEIN_OF_CODON.items():
     num_codons[protein] += 1
 
 protein_seq = args.dataset.read().strip()
