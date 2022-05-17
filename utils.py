@@ -17,7 +17,9 @@ def dna_to_rna(string):
 
 def read_fasta(handle):
     fasta_iter = groupby(handle, lambda line: line[0] == ">")
-
+    name = None
+    seq = None
+    
     for (is_header, val) in fasta_iter:
         val = [x.strip('\n') for x in val]
 
