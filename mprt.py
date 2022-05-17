@@ -4,7 +4,10 @@ import argparse
 from io import StringIO
 import re
 import requests
+from urllib.parse import urljoin
 from utils import read_fasta
+
+BASE_URL = 'http://www.uniprot.org/uniprot/'
 
 parser = argparse.ArgumentParser()
 parser.add_argument('dataset', type=argparse.FileType('r'))
@@ -14,12 +17,12 @@ uniprot_ids = args.dataset.read().splitlines()
 regex = re.compile(r'(?=N[^P][S|T][^P])')
 
 for uniprot_id in uniprot_ids:
-    uniprot_url = f'http://www.uniprot.org/uniprot/{uniprot_id}.fasta'
-    try:
-        r = requests.get(uniprot_url,allow_redirects=True)
-        content = r.text
-    except: 
-        print('accession ID not valid')
+
+    r = requests.get(
+        urljoin(BASE_URL, uniprot_id + '.fasta'),
+        allow_redirects=True
+    )
+    content = r.text
 
     (name, seq) = next(read_fasta(StringIO(r.text)))
 
