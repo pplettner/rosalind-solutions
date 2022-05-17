@@ -38,7 +38,7 @@ parser = argparse.ArgumentParser()
 parser.add_argument('dataset', type=argparse.FileType('r'))
 args = parser.parse_args()
 
-all_seqs = [seq for (name,seq) in read_fasta(args.dataset)]
+all_seqs = [seq for (_,seq) in read_fasta(args.dataset)]
 
 # Print arbitrary result instead of all of them
 print (lcs(*all_seqs).pop())

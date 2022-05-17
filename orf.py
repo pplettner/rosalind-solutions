@@ -18,7 +18,7 @@ parser = argparse.ArgumentParser()
 parser.add_argument('dataset', type=argparse.FileType('r'))
 args = parser.parse_args()
 
-(name, seq) = next(read_fasta(args.dataset))
+(_, seq) = next(read_fasta(args.dataset))
 
 rna_seq = dna_to_rna(seq)
 revc_rna_seq = dna_to_rna(reverse_complement(seq))

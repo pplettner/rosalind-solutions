@@ -9,9 +9,9 @@ args = parser.parse_args()
 
 fa_iter = read_fasta(args.dataset)
 
-(name, seq) = next(fa_iter)
+(_, seq) = next(fa_iter)
 
-for (name, intron) in fa_iter:
+for (_, intron) in fa_iter:
     seq = seq.replace(intron, '')
 
 rna_seq = dna_to_rna(seq)

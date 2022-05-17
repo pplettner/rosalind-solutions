@@ -24,7 +24,7 @@ for uniprot_id in uniprot_ids:
     )
     content = r.text
 
-    (name, seq) = next(read_fasta(StringIO(r.text)))
+    (_, seq) = next(read_fasta(StringIO(r.text)))
 
     locations = [match.start() + 1 for match in re.finditer(regex, seq)]
 

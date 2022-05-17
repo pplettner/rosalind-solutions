@@ -7,8 +7,10 @@ parser = argparse.ArgumentParser()
 parser.add_argument('dataset', type=argparse.FileType('r'))
 args = parser.parse_args()
 
-(name1, seq1) = next(read_fasta(args.dataset))
-(name2, seq2) = next(read_fasta(args.dataset))
+
+fa_iter = read_fasta(args.dataset)
+(_, seq1) = next(fa_iter)
+(_, seq2) = next(fa_iter)
 
 transitions = 0
 transversions = 0
