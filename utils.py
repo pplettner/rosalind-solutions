@@ -10,10 +10,22 @@ MASS_OF_AA = json.loads(
     read_text('data', 'aa_mass.json')
 )
 
+class InvalidSequenceException(Exception):
+    """Exception raised for errors in the RNA->protein transcription
+    """
+
+    def __init__(self, message):
+        super().__init__(message)
+
+
 def dna_to_rna(string):
-    trans_table = str.maketrans('T','U')
-    rna_string = string.upper().translate(trans_table)
-    return rna_string
+    return string.upper().replace('T','U')
+
+def reverse_complement(string):
+    trans_table = str.maketrans('ACGT','TGCA')
+    revc = string.upper()[::-1].translate(trans_table)
+    return revc
+
 
 def read_fasta(handle):
     fasta_iter = groupby(handle, lambda line: line[0] == ">")
@@ -31,24 +43,36 @@ def read_fasta(handle):
             seq = ''.join(val)
             yield (name, seq)
 
-def reverse_complement(string):
-    trans_table = str.maketrans('ACGT','TGCA')
-    revc = string.upper()[::-1].translate(trans_table)
-    return revc
-
 def rna_to_prot(seq):
+
     protein_seq = ''
+    start_found = False
+    stop_found = False
 
     for triple in grouper(seq, 3):
         if None in triple:
-            break
-        codon = ''.join(triple)
-        protein = PROTEIN_OF_CODON[codon]
+            codon = ''.join([x for x in triple if x is not None])
+            raise InvalidSequenceException(f"Sequence truncated (ended with {codon})")
 
-        if protein == 'Stop':
-            break
-        else:
-            protein_seq += protein
+        codon = ''.join(triple)
+
+        try:
+            protein = PROTEIN_OF_CODON[codon]
+        except KeyError:
+            raise InvalidSequenceException(f"Codon {codon} not found in lookup table")
+
+        if start_found:
+            if protein == 'Stop':
+                stop_found = True
+                break
+            else:
+                protein_seq += protein
+        elif codon == 'AUG':
+            start_found = True
+            protein_seq = protein
+
+    if not stop_found:
+        raise InvalidSequenceException("Sequence doesn't end with stop codon")
 
     return protein_seq
 
